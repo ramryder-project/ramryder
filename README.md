@@ -10,7 +10,7 @@ The main components of RamRyder include a user-space resource manager, a hypervi
 
 # Quick Start
 
-This page describes how to build RamRyder, configure the resource manager, and manage VMs with `ramryder_cli`.
+This section describes how to quickly set up RamRyder and launch a VM.
 
 ## Build Project
 
@@ -106,10 +106,10 @@ Then refer to `readme.txt` inside the package for login information.
 
 All VM operations are managed by `admin/ramryder_cli`. You can use this tool to query resource allocations, allocate resources, and create VMs. Use `ramryder_cli --help` to check usage.
 
-Create a VM with DIMM + CXL memory:
+Create a VM with 32 vCPU and DIMM + CXL memory:
 ```bash
 ./admin/ramryder_cli create-vm \
-  --cpu-set 0-9,20-29 \
+  --cpu-set 0-15,128-143 \
   --memory 100G \
   --channels 4 \
   --cxl-memory 50G \
@@ -180,17 +180,87 @@ Then reboot the VM and select the new kernel `Linux 6.3.0-ramos+`.
 Note that `INSTALL_MOD_STRIP=1` removes debug symbols from kernel modules. This reduces build time and saves storage space, but you may want to keep debug symbols if you plan to use `gdb`.
 
 # Detailed Instructions
+This section provides detailed instructions to construct same experimental setups and reproduce experimental results described in the paper.
 
-For detailed installation steps, configuration guidance, and module-level explanations, please refer to the documentation site.
 
-## Hardware Support
+## Set Up VMs
+1\. Start Resource Manager
+```bash
+cd src
+sudo ./resource_manager
+```
+
+2\. Create VM 1 with 16 vCPU and 32GB DIMM on 1 channel:
+```bash
+./admin/ramryder_cli create-vm \
+  --cpu-set 0-7,128-135 \
+  --memory 32G \
+  --channels 1 \
+  --image /path/to/nvcloud-image-vm1.qcow2
+```
+
+3\. Create VM 2 with 16 vCPU and 32GB DIMM on 1 channel:
+```bash
+./admin/ramryder_cli create-vm \
+  --cpu-set 8-15,136-143 \
+  --memory 32G \
+  --channels 1 \
+  --image /path/to/nvcloud-image-vm2.qcow2
+```
+
+4\. Create VM 3 with 48 vCPU and 96GB DIMM on 3 channel:
+```bash
+./admin/ramryder_cli create-vm \
+  --cpu-set 16-39,144-167 \
+  --memory 96G \
+  --channels 3 \
+  --image /path/to/nvcloud-image-vm3.qcow2
+```
+
+4\. Create VM 4 with 48 vCPU and 96GB DIMM on 3 channel:
+```bash
+./admin/ramryder_cli create-vm \
+  --cpu-set 40-63,168-191 \
+  --memory 96G \
+  --channels 3 \
+  --image /path/to/nvcloud-image-vm4.qcow2
+```
+## Benchmark VMs
+After VMs are ready, log in to each VM and run target workloads. RamRyder project maintains a [benchmarks suit](https://github.com/ramryder-project/mem-benchmarks) which include all memory related benchmarks.  
+
+1\. Get Benchmarks
+```bash
+git clone --recurse-submodules git@github.com:ramryder-project/mem-benchmarks.git
+```
+
+2\. Run Microbenchmark MLC
+```bash
+cd mem-benchmarks
+./mlc/mlc --loaded_latency
+```
+
+3\. Run STREAM
+```bash
+./scripts/STREAM/compile_stream.sh
+./STREAM/stream_c.exe
+```
+
+4\. Run YCSB
+YCSB supports multiples databases, each involves unique configuration and setup. Please refer to [YCSB website](https://github.com/brianfrankcooper/YCSB/tree/master) to set up target databases (e.g., [Redis](https://github.com/brianfrankcooper/YCSB/tree/master/redis) and [Memcached](https://github.com/brianfrankcooper/YCSB/tree/master/memcached)) and run YCSB workloads. 
+
+RamRyder provides an example script to run YCSB workloads on Memcached.
+```bash
+./scripts/memcached/load_ycsb_a.sh
+./scripts/memcached/run_ycsb_a.sh
+./scripts/memcached/run_ycsb_b.sh
+```
+# Documentation
+
+[Documentation](https://ramryder-project.github.io/docs/) provdes complete instrudctions. For more detailed installation steps, configuration guidance, and module-level explanations, please refer to the documentation:
 
 - [DIMM Setup](https://ramryder-project.github.io/docs/hardware-support/dimm)
 - [PMem Setup](https://ramryder-project.github.io/docs/hardware-support/pmem)
 - [CXL Setup](https://ramryder-project.github.io/docs/hardware-support/cxl)
-
-## Core Components
-
 - [Resource Manager Setup](https://ramryder-project.github.io/docs/getting-started/resource-manager-setup)
 - [Virtual Machine Setup](https://ramryder-project.github.io/docs/getting-started/virtual-machine-setup)
 - [Kernel Installation](https://ramryder-project.github.io/docs/getting-started/kernel-installation)
