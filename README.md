@@ -1,4 +1,4 @@
-<p align="center">
+<p align="center" style="margin-top: 25px;">
   <img src="logos/logo_small_trim.png" alt="RamRyder Logo" width="80%" />
 </p>
 
