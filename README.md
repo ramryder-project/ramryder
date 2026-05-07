@@ -2,16 +2,29 @@
   <img src="logos/logo_small_trim.png" alt="RamRyder Logo" width="80%" />
 </p>
 
-# About
+<p align="center">
+  <a href="https://ramryder-project.github.io/docs/">
+    <img alt="docs" src="https://img.shields.io/badge/docs-reference-0A66C2">
+  </a>
+  <img alt="language" src="https://img.shields.io/badge/language-C-00599C">
+  <img alt="platform" src="https://img.shields.io/badge/platform-linux-FCC624">
+</p>
+
 
 RamRyder is a software-defined elastic memory system for cloud virtual machines. Its core idea is to manage and allocate memory channels in software, allowing users to control the memory capacity and bandwidth of each virtual machine based on application demands.
 
 The main components of RamRyder include a user-space resource manager, a hypervisor extended from QEMU, and a guest Linux kernel.
 
-Navigation:
-- [Quick Start](#quick-start): Build the project, configure resources, start services, and launch VMs.
-- [Detailed Instructions](#detailed-instructions): Reproduce the paper's experimental setup and benchmark workflows.
-- [Documentation](#documentation): Visit full docs for hardware setup, VM setup, and kernel installation.
+In this README
+
+- [Documentation](#documentation): Find complete setup and usage guides.
+- [Quick Start](#quick-start): Build and launch RamRyder quickly.
+- [Detailed Instructions](#detailed-instructions): Reproduce the paper's experiment setup and benchmarks.
+- [Acknowledgments](#acknowledgments): Acknowledgments and contact information.
+
+# Documentation
+
+For complete setup and usage instructions, visit the [documentation](https://ramryder-project.github.io/docs/), including hardware setup, resource manager setup, VM setup, kernel installation, and detailed configuration guidance.
 
 # Quick Start
 
@@ -187,6 +200,7 @@ Note that `INSTALL_MOD_STRIP=1` removes debug symbols from kernel modules. This 
 # Detailed Instructions
 This section provides detailed instructions for constructing the same experimental setups and reproducing the experimental results described in the paper.
 
+The steps below assume you have already completed the setup described above and prepared four VM images with the updated kernel installed. If not, refer to [Quick Start](#quick-start) to set up RamRyder key components first.
 
 ## Set Up VMs
 1\. Start Resource Manager
@@ -259,13 +273,8 @@ RamRyder provides an example script to run YCSB workloads on Memcached.
 ./scripts/memcached/run_ycsb_a.sh
 ./scripts/memcached/run_ycsb_b.sh
 ```
-# Documentation
 
-The [Documentation](https://ramryder-project.github.io/docs/) provides complete instructions. For detailed installation steps, configuration guidance, and module-level explanations, refer to:
+# Acknowledgments
 
-- [DIMM Setup](https://ramryder-project.github.io/docs/hardware-support/dimm)
-- [PMem Setup](https://ramryder-project.github.io/docs/hardware-support/pmem)
-- [CXL Setup](https://ramryder-project.github.io/docs/hardware-support/cxl)
-- [Resource Manager Setup](https://ramryder-project.github.io/docs/getting-started/resource-manager-setup)
-- [Virtual Machine Setup](https://ramryder-project.github.io/docs/getting-started/virtual-machine-setup)
-- [Kernel Installation](https://ramryder-project.github.io/docs/getting-started/kernel-installation)
+RamRyder is developed by the [Non-Volatile Systems Lab (NVSL)](https://www.nvsl.io/) at UC San Diego.
+For questions, please contact the maintainer, Yanbo Zhou (`yaz093@ucsd.edu`).
