@@ -8,6 +8,11 @@ RamRyder is a software-defined elastic memory system for cloud virtual machines.
 
 The main components of RamRyder include a user-space resource manager, a hypervisor extended from QEMU, and a guest Linux kernel.
 
+Navigation:
+- [Quick Start](#quick-start): Build the project, configure resources, start services, and launch VMs.
+- [Detailed Instructions](#detailed-instructions): Reproduce the paper's experimental setup and benchmark workflows.
+- [Documentation](#documentation): Visit full docs for hardware setup, VM setup, and kernel installation.
+
 # Quick Start
 
 This section describes how to quickly set up RamRyder and launch a VM.
@@ -180,7 +185,7 @@ Then reboot the VM and select the new kernel `Linux 6.3.0-ramos+`.
 Note that `INSTALL_MOD_STRIP=1` removes debug symbols from kernel modules. This reduces build time and saves storage space, but you may want to keep debug symbols if you plan to use `gdb`.
 
 # Detailed Instructions
-This section provides detailed instructions to construct same experimental setups and reproduce experimental results described in the paper.
+This section provides detailed instructions for constructing the same experimental setups and reproducing the experimental results described in the paper.
 
 
 ## Set Up VMs
@@ -190,7 +195,7 @@ cd src
 sudo ./resource_manager
 ```
 
-2\. Create VM 1 with 16 vCPU and 32GB DIMM on 1 channel:
+2\. Create VM 1 with 16 vCPUs and 32 GB DIMM on 1 channel:
 ```bash
 ./admin/ramryder_cli create-vm \
   --cpu-set 0-7,128-135 \
@@ -199,7 +204,7 @@ sudo ./resource_manager
   --image /path/to/nvcloud-image-vm1.qcow2
 ```
 
-3\. Create VM 2 with 16 vCPU and 32GB DIMM on 1 channel:
+3\. Create VM 2 with 16 vCPUs and 32 GB DIMM on 1 channel:
 ```bash
 ./admin/ramryder_cli create-vm \
   --cpu-set 8-15,136-143 \
@@ -208,7 +213,7 @@ sudo ./resource_manager
   --image /path/to/nvcloud-image-vm2.qcow2
 ```
 
-4\. Create VM 3 with 48 vCPU and 96GB DIMM on 3 channel:
+4\. Create VM 3 with 48 vCPUs and 96 GB DIMM on 3 channels:
 ```bash
 ./admin/ramryder_cli create-vm \
   --cpu-set 16-39,144-167 \
@@ -217,7 +222,7 @@ sudo ./resource_manager
   --image /path/to/nvcloud-image-vm3.qcow2
 ```
 
-4\. Create VM 4 with 48 vCPU and 96GB DIMM on 3 channel:
+5\. Create VM 4 with 48 vCPUs and 96 GB DIMM on 3 channels:
 ```bash
 ./admin/ramryder_cli create-vm \
   --cpu-set 40-63,168-191 \
@@ -226,7 +231,7 @@ sudo ./resource_manager
   --image /path/to/nvcloud-image-vm4.qcow2
 ```
 ## Benchmark VMs
-After VMs are ready, log in to each VM and run target workloads. RamRyder project maintains a [benchmarks suit](https://github.com/ramryder-project/mem-benchmarks) which include all memory related benchmarks.  
+After the VMs are ready, log in to each VM and run target workloads. The RamRyder project maintains a [benchmark suite](https://github.com/ramryder-project/mem-benchmarks) that includes memory-related benchmarks.
 
 1\. Get Benchmarks
 ```bash
@@ -246,7 +251,7 @@ cd mem-benchmarks
 ```
 
 4\. Run YCSB
-YCSB supports multiples databases, each involves unique configuration and setup. Please refer to [YCSB website](https://github.com/brianfrankcooper/YCSB/tree/master) to set up target databases (e.g., [Redis](https://github.com/brianfrankcooper/YCSB/tree/master/redis) and [Memcached](https://github.com/brianfrankcooper/YCSB/tree/master/memcached)) and run YCSB workloads. 
+YCSB supports multiple databases, each requiring its own configuration and setup. Please refer to the [YCSB website](https://github.com/brianfrankcooper/YCSB/tree/master) to set up target databases (for example, [Redis](https://github.com/brianfrankcooper/YCSB/tree/master/redis) and [Memcached](https://github.com/brianfrankcooper/YCSB/tree/master/memcached)) and run YCSB workloads.
 
 RamRyder provides an example script to run YCSB workloads on Memcached.
 ```bash
@@ -256,7 +261,7 @@ RamRyder provides an example script to run YCSB workloads on Memcached.
 ```
 # Documentation
 
-[Documentation](https://ramryder-project.github.io/docs/) provdes complete instrudctions. For more detailed installation steps, configuration guidance, and module-level explanations, please refer to the documentation:
+The [Documentation](https://ramryder-project.github.io/docs/) provides complete instructions. For detailed installation steps, configuration guidance, and module-level explanations, refer to:
 
 - [DIMM Setup](https://ramryder-project.github.io/docs/hardware-support/dimm)
 - [PMem Setup](https://ramryder-project.github.io/docs/hardware-support/pmem)
