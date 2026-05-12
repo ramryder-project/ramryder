@@ -7,6 +7,9 @@
   <a href="https://ramryder-project.github.io/docs/">
     <img alt="docs" src="https://img.shields.io/badge/docs-reference-0A66C2">
   </a>
+  <a href="./LICENSE">
+    <img alt="license" src="https://img.shields.io/badge/license-MIT-green.svg">
+  </a>
   <img alt="language" src="https://img.shields.io/badge/language-C-00599C">
   <img alt="platform" src="https://img.shields.io/badge/platform-linux-FCC624">
 </p>
