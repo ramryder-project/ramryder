@@ -146,8 +146,8 @@ Important Behavior:
 - Use `ssh -p <port> <user>@localhost` to log in to the VM.
 > [!NOTE]
 > Choose `--cpu-set` based on two rules:
-> 1. Apply CCD-level isolation: place different VMs on different CCDs.
-> 2. Map each VM's two vCPUs to one physical core's hyperthread sibling pair.
+> 1. Place different VMs on different Core Complexes (CCXs).
+> 2. Within each CCX, use hyperthread sibling pairs for each VM’s vCPUs.
 
 ## Update Guest Kernel
 After the VM is ready, log in to the VM and then update the guest kernel as follows.
