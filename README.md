@@ -109,10 +109,11 @@ For each DAX device:
 
 ```bash
 cd src
-sudo ./resource_manager
+sudo ./resource_manager -d -c ./elasticmm.conf
 ```
-
-`sudo` is required because the resource manager reads host performance counters.
+- `-d`: run the resource manager in the background as a daemon.
+- `-c`: specify the resource manager config file path.
+- Check log in `/var/log/resource_manager.log`.
 
 2\. Get VM Image
 
@@ -213,7 +214,7 @@ The steps below assume you have already completed the setup described above and 
 1\. Start Resource Manager
 ```bash
 cd src
-sudo ./resource_manager
+sudo ./resource_manager -d -c ./elasticmm.conf
 ```
 
 2\. Create VM 1 with 16 vCPUs and 32 GB DIMM on 1 channel:

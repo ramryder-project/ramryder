@@ -2,10 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <stdbool.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
 #include <sys/epoll.h>
+#include <sys/stat.h>
 #include <signal.h>
 #include "memory_pool.h"
 #include "util_socket.h"
@@ -16,13 +21,113 @@
 #include "util_common.h"
 #include "util_log.h"
 
-#define CONFIG_FILE "elasticmm.conf"
+#define DEFAULT_CONFIG_FILE "elasticmm.conf"
 #define LOG_CONFIG_FILE "zlog.conf"
 #define SERVER_SOCKET "/var/run/resource_manager.sock"
 #define MAX_EVENTS 10
 
 static int g_server_fd = -1;
 static int g_epoll_fd = -1;
+static char g_log_config_path[PATH_MAX];
+
+static void print_usage(const char *prog)
+{
+    printf("Usage: %s [-d] [-c config_file] [-h]\n", prog);
+    printf("  -c    specify resource manager config file path (default: %s)\n",
+        DEFAULT_CONFIG_FILE);
+    printf("  -d    run as a daemon in the background\n");
+    printf("  -h    show this help message\n");
+}
+
+static int redirect_stdio_to_devnull(void)
+{
+    int fd;
+
+    fd = open("/dev/null", O_RDWR);
+    if (fd < 0) {
+        return -1;
+    }
+
+    if (dup2(fd, STDIN_FILENO) < 0 ||
+        dup2(fd, STDOUT_FILENO) < 0 ||
+        dup2(fd, STDERR_FILENO) < 0) {
+        close(fd);
+        return -1;
+    }
+
+    if (fd > STDERR_FILENO) {
+        close(fd);
+    }
+
+    return 0;
+}
+
+static int daemonize(void)
+{
+    pid_t pid;
+
+    pid = fork();
+    if (pid < 0) {
+        return -1;
+    }
+    if (pid > 0) {
+        exit(EXIT_SUCCESS);
+    }
+
+    if (setsid() < 0) {
+        return -1;
+    }
+
+    signal(SIGHUP, SIG_IGN);
+
+    pid = fork();
+    if (pid < 0) {
+        return -1;
+    }
+    if (pid > 0) {
+        exit(EXIT_SUCCESS);
+    }
+
+    umask(0);
+
+    /* Keep cwd so relative config/log paths are resolved from launch dir. */
+    return redirect_stdio_to_devnull();
+}
+
+static const char *resolve_log_config_path(void)
+{
+    ssize_t len;
+    char *slash;
+
+    if (access(LOG_CONFIG_FILE, R_OK) == 0) {
+        return LOG_CONFIG_FILE;
+    }
+
+    len = readlink("/proc/self/exe", g_log_config_path,
+        sizeof(g_log_config_path) - 1);
+    if (len < 0) {
+        return LOG_CONFIG_FILE;
+    }
+    g_log_config_path[len] = '\0';
+
+    slash = strrchr(g_log_config_path, '/');
+    if (slash == NULL) {
+        return LOG_CONFIG_FILE;
+    }
+
+    *(slash + 1) = '\0';
+    if (strlen(g_log_config_path) + strlen(LOG_CONFIG_FILE) + 1 >
+        sizeof(g_log_config_path)) {
+        return LOG_CONFIG_FILE;
+    }
+    strcat(g_log_config_path, LOG_CONFIG_FILE);
+
+    if (access(g_log_config_path, R_OK) == 0) {
+        return g_log_config_path;
+    }
+
+    return LOG_CONFIG_FILE;
+}
 
 static void rpc_server_stop(void)
 {
@@ -465,20 +570,48 @@ static void handle_signal(int signum __attribute__((unused)))
     exit(0);
 }
 
-int main()
+int main(int argc, char **argv)
 {
-    if (rm_log_init(LOG_CONFIG_FILE) != 0) {
+    int opt;
+    const char *config_file = DEFAULT_CONFIG_FILE;
+    const char *log_config_file = resolve_log_config_path();
+    bool run_as_daemon = false;
+
+    while ((opt = getopt(argc, argv, "c:dh")) != -1) {
+        switch (opt) {
+        case 'c':
+            config_file = optarg;
+            break;
+        case 'd':
+            run_as_daemon = true;
+            break;
+        case 'h':
+            print_usage(argv[0]);
+            return 0;
+        default:
+            print_usage(argv[0]);
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (run_as_daemon && daemonize() != 0) {
+        fprintf(stderr, "Failed to daemonize: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+
+    if (rm_log_init(log_config_file) != 0) {
         exit(EXIT_FAILURE);
     }
 
     signal(SIGINT, handle_signal);
+    signal(SIGTERM, handle_signal);
 
-    if (memory_pool_init(CONFIG_FILE) != 0) {
+    if (memory_pool_init(config_file) != 0) {
         exit(EXIT_FAILURE);
     }
 
 #ifndef ARCH_AMD
-    if (guest_monitor_server_start(CONFIG_FILE) != 0) {
+    if (guest_monitor_server_start(config_file) != 0) {
         exit(EXIT_FAILURE);
     }
 #endif
