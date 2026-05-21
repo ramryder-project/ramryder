@@ -290,8 +290,7 @@ int vm_mngr_instance_destroy(int vm_id)
     }
 
     if (VM->running) {
-        LOG_ERROR("Cannot destroy running VM %d", vm_id);
-        return -1;
+        vm_mngr_instance_stop(vm_id);
     }
 
     memset(VM->core_set, 0, sizeof(VM->core_set));
