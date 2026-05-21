@@ -670,9 +670,8 @@ def handle_create_vm(args: argparse.Namespace, qemu_bin: str) -> int:
             qemu_pid = qemu_pids[0] if qemu_pids else proc.pid
             print(f"[info] QEMU launch success: pid={qemu_pid} vmid={vmid} ssh_port={hostfwd_port} log_path={log_path}")
             wait_for_vm_ready(vmid, qemu_pid, hostfwd_port)
-            if cfg.disable_vcpu_pin:
-                print(f"[info] vCPU pin disabled: vmid={vmid}")
-            else:
+            # pin vCPU after VM is ready.
+            if not cfg.disable_vcpu_pin:
                 try:
                     pin_qemu_vcpus(vmid, cfg.cpu_set)
                     print(f"[info] CPU pin success: vmid={vmid} cpu_set={cfg.cpu_set}")
