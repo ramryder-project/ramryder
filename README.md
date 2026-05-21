@@ -221,6 +221,10 @@ sudo ./resource_manager
   --channels 1 \
   --image /path/to/nvcloud-image-vm1.qcow2
 ```
+> [!NOTE]
+> Choose `--cpu-set` based on two rules:
+> 1. Apply CCD-level isolation: place different VMs on different CCDs.
+> 2. Map each VM's two vCPUs to one physical core's hyperthread sibling pair.
 
 3\. Create VM 2 with 16 vCPUs and 32 GB DIMM on 1 channel:
 ```bash
