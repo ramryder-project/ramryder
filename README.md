@@ -138,13 +138,16 @@ Create a VM with 32 vCPU and DIMM + CXL memory:
   --cxl-channels 2 \
   --image /path/to/nvcloud-image-clean.qcow2
 ```
-
 Important Behavior:
 - `--memory/--channels` are for local memory (DIMM, tier 0).
 - `--cxl-memory/--cxl-channels` are for CXL memory (tier 1).
 - `--image` sets the VM qcow2 path (default: `~/images/nvcloud-image-clean.qcow2`).
 - The SSH forwarding port is generated automatically.
 - Use `ssh -p <port> <user>@localhost` to log in to the VM.
+> [!NOTE]
+> Choose `--cpu-set` based on two rules:
+> 1. Apply CCD-level isolation: place different VMs on different CCDs.
+> 2. Map each VM's two vCPUs to one physical core's hyperthread sibling pair.
 
 ## Update Guest Kernel
 After the VM is ready, log in to the VM and then update the guest kernel as follows.
@@ -221,10 +224,6 @@ sudo ./resource_manager
   --channels 1 \
   --image /path/to/nvcloud-image-vm1.qcow2
 ```
-> [!NOTE]
-> Choose `--cpu-set` based on two rules:
-> 1. Apply CCD-level isolation: place different VMs on different CCDs.
-> 2. Map each VM's two vCPUs to one physical core's hyperthread sibling pair.
 
 3\. Create VM 2 with 16 vCPUs and 32 GB DIMM on 1 channel:
 ```bash
