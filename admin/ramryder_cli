@@ -29,6 +29,7 @@ class VmConfig:
     image: str
     hostfwd_port: int
     disable_vcpu_pin: bool
+    enable_dynamic: bool
     dry_run: bool
 
 
@@ -291,6 +292,7 @@ def build_parser(default_img: str) -> argparse.ArgumentParser:
     create_parser.add_argument("--image", default=default_img, help="VM image path")
     create_parser.add_argument("--hostfwd-port", type=int, help="Host forwarded SSH port (default: base port + VMID)")
     create_parser.add_argument("--disable-vcpu-pin", action="store_true", help="Disable vCPU pinning")
+    create_parser.add_argument("--enable-dynamic", action="store_true", help="Enable dynamic memory adjustment at runtime")
     create_parser.add_argument("--dry-run", action="store_true", help="Execute RPC steps but do not launch final QEMU process")
 
     destroy_parser = subparsers.add_parser("destroy-vm", help="Destroy a VM and release resources")
@@ -613,6 +615,7 @@ def handle_create_vm(args: argparse.Namespace, qemu_bin: str) -> int:
         image=args.image,
         hostfwd_port=args.hostfwd_port,
         disable_vcpu_pin=args.disable_vcpu_pin,
+        enable_dynamic=args.enable_dynamic,
         dry_run=args.dry_run,
     )
 
@@ -670,7 +673,13 @@ def handle_create_vm(args: argparse.Namespace, qemu_bin: str) -> int:
             qemu_pid = qemu_pids[0] if qemu_pids else proc.pid
             print(f"[info] QEMU launch success: pid={qemu_pid} vmid={vmid} ssh_port={hostfwd_port} log_path={log_path}")
             wait_for_vm_ready(vmid, qemu_pid, hostfwd_port)
-            # pin vCPU after VM is ready.
+            # start VM monitor after VM is ready
+            if cfg.enable_dynamic:
+                start_out = RC.start_vm(vmid)
+                if "success" not in start_out.lower():
+                    raise RuntimeError(f"Failed to enable dynamic allocation for vid={vmid}: {start_out}")
+                print(f"[info] dynamic allocation enabled: vmid={vmid}")
+            # pin vCPU after VM is ready
             if not cfg.disable_vcpu_pin:
                 try:
                     pin_qemu_vcpus(vmid, cfg.cpu_set)

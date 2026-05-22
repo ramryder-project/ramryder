@@ -58,6 +58,9 @@ class ResourceClient:
     def destroy_vm(self, vid: int) -> str:
         return self.send(f"destroy-vm vid={vid}")
 
+    def start_vm(self, vid: int) -> str:
+        return self.send(f"start-vm vid={vid}")
+
     def alloc_mem(self, nid: int, vid: int, size_mb: int) -> str:
         return self.send(f"alloc-mem nid={nid} vid={vid} size={size_mb}")
 
