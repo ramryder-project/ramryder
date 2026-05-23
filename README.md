@@ -252,11 +252,10 @@ sudo ./resource_manager -d -c ./elasticmm.conf
   --channels 3 \
   --image /path/to/nvcloud-image-vm4.qcow2
 ```
-
 > [!NOTE]
 > Dynamic memory adjustment at runtime:
-> Use RamRyder's monitor system and perform adjustment automatically: `--enable-dynamic` when creating VMs
-> Or use your monitor system and attach memory at runtime via RPC `./admin/ramryder_cli attach-mem --help`
+> 1. Use RamRyder's monitor system and perform adjustment automatically: `--enable-dynamic` when creating VMs
+> 2. Or use your monitor system and attach memory at runtime via RPC `./admin/ramryder_cli attach-mem --help`
 
 ## Benchmark VMs
 After the VMs are ready, log in to each VM and run target workloads. The RamRyder project maintains a [benchmark suite](https://github.com/ramryder-project/mem-benchmarks) that includes memory-related benchmarks.
