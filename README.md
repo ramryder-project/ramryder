@@ -254,8 +254,8 @@ sudo ./resource_manager -d -c ./elasticmm.conf
 ```
 > [!NOTE]
 > Dynamic memory adjustment at runtime:
-> 1. Use RamRyder's monitor system and perform adjustment automatically: `--enable-dynamic` when creating VMs
-> 2. Or use your monitor system and attach memory at runtime via RPC `./admin/ramryder_cli attach-mem --help`
+> 1. Use RamRyder's monitor and perform adjustment automatically: `--enable-dynamic` when creating VMs
+> 2. Or use your monitor and attach memory at runtime via RPC `./admin/ramryder_cli attach-mem --help`
 
 ## Benchmark VMs
 After the VMs are ready, log in to each VM and run target workloads. The RamRyder project maintains a [benchmark suite](https://github.com/ramryder-project/mem-benchmarks) that includes memory-related benchmarks.
