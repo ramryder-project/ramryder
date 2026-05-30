@@ -38,7 +38,7 @@ This section describes how to quickly set up RamRyder and launch a VM.
 
 1\. Get Source Code
 ```bash
-git clone --recurse-submodules git@github.com:ramryder-project/ramryder.git
+git clone --recurse-submodules https://github.com/ramryder-project/ramryder.git
 ```
 
 2\. Install Dependencies
@@ -156,7 +156,7 @@ After the VM is ready, log in to the VM and then update the guest kernel as foll
 1\. Get Source Code
 
 ```bash
-git clone git@github.com:ramryder-project/ramos.git
+git clone https://github.com/ramryder-project/ramos.git
 cd ramos
 ```
 
@@ -262,7 +262,7 @@ After the VMs are ready, log in to each VM and run target workloads. The RamRyde
 
 1\. Get Benchmarks
 ```bash
-git clone --recurse-submodules git@github.com:ramryder-project/mem-benchmarks.git
+git clone --recurse-submodules https://github.com/ramryder-project/mem-benchmarks.git
 ```
 
 2\. Run Microbenchmark MLC
