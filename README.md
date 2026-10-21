@@ -31,7 +31,15 @@ In this README
 
 The demo below showcases RamRyder's key capability to dynamically allocate memory bandwidth via allocating memory channels.
 
-[![Watch the RamRyder demo on YouTube](https://img.youtube.com/vi/ERLTf3kNptY/hqdefault.jpg)](https://youtu.be/ERLTf3kNptY)
+<p align="center">
+  <a href="https://youtu.be/ERLTf3kNptY"><strong>▶ Watch on YouTube</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/ERLTf3kNptY">
+    <img src="https://img.youtube.com/vi/ERLTf3kNptY/maxresdefault.jpg" alt="Watch the RamRyder demo on YouTube" />
+  </a>
+</p>
 
 # Documentation
 
