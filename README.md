@@ -21,10 +21,17 @@ The main components of RamRyder include a user-space resource manager, a hypervi
 
 In this README
 
+- [Demo](#demo): See dynamic memory channel allocation in action.
 - [Documentation](#documentation): Find complete setup and usage guides.
 - [Quick Start](#quick-start): Build and launch RamRyder quickly.
 - [Detailed Instructions](#detailed-instructions): Reproduce the paper's experiment setup and benchmarks.
 - [Acknowledgments](#acknowledgments): Acknowledgments and contact information.
+
+# Demo
+
+The demo below showcases RamRyder's key capability to dynamically allocate memory bandwidth via allocating memory channels.
+
+[▶ Watch the demo](./media/demo.mp4)
 
 # Documentation
 
